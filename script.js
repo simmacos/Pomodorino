@@ -4,6 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let timer = false;
     let seconds = 0;
     let minutes = 0;
+    let isBreakMode = false;
+
 
     startStopBtn.addEventListener('click', () => {
         timer = !timer;
@@ -20,12 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function pomoWatch(){
         if(timer){
-            seconds ++;
+            if(isBreakMode){
+                if(seconds > 0 || minutes > 0){
+                    if(seconds === 0){
+                        minutes --
+                        seconds == 59
+                    } else { 
+                        seconds --;
+                    }
+                } else {
+                    timer = false;
+                    isBreakMode = false;
+                    return;
+                }
+            } else {
+                seconds ++;
             
-            if(seconds === 60){
-                minutes++;
-                seconds = 0;
+                if(seconds === 60){
+                    minutes++;
+                    seconds = 0;
+                }
             }
+
             let min1 = Math.floor(minutes / 10);
             let min2 = minutes % 10;
 
@@ -43,12 +61,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function reset() {
         timer = false;
-        seconds = 0;
-        minutes = 0;
-        document.querySelector('.mn1').textContent = '0';
-        document.querySelector('.mn2').textContent = '0';
-        document.querySelector('.sc1').textContent = '0';
-        document.querySelector('.sc2').textContent = '0';
+        if(minutes === 0 & seconds < 30){
+            seconds = 0;
+            minutes = 0;
+            document.querySelector('.mn1').textContent = '0';
+            document.querySelector('.mn2').textContent = '0';
+            document.querySelector('.sc1').textContent = '0';
+            document.querySelector('.sc2').textContent = '0';
+        }
+        calcPause();
     }
+
+    function calcPause(){
+        seconds = seconds + (minutes * 60 );
+
+        seconds = Math.round(seconds * 0.2);
+        minutes = Math.floor(seconds / 60);
+        seconds = (seconds % 60);
+
+        pauseTimer(seconds, minutes);
+    }
+
+    function pauseTimer(sec, min) {
+        seconds = sec;
+        minutes = min;
+        timer = true;
+        isBreakMode = true;
+        pomoWatch(); 
+    }
+
 
 })
