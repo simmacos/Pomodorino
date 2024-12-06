@@ -63,3 +63,22 @@ body {
     font-size: 4em;
     font-weight: 800;
 }
+/* Aggiungi queste regole alla fine del tuo CSS esistente */
+
+/* Stile per il pulsante reset quando il timer è attivo */
+.timer-active .box-center:hover {
+    background-color: #e74c3c !important; /* Rosso quando hover e timer attivo */
+    border-color: #e74c3c !important;
+    transition: all 0.3s ease;
+}
+
+.timer-active .box-center:hover .digit {
+    color: white !important;
+    transition: color 0.3s ease;
+}
+
+/* Stile per la modalità break */
+.break-mode .digit {
+    color: #2980b9;
+    transition: color 0.3s ease;
+}

@@ -1,9 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     const BREAK_RATIO = 0.2; // 20% del tempo di lavoro
-    const MIN_TIME_FOR_BREAK = 30; // secondi minimi per avere una pausa
+    const MIN_TIME_FOR_BREAK = 1; // secondi minimi per avere una pausa
     
     let startStopBtn = document.querySelector('.boxes-button');
     let resetBox = document.querySelector('#reset-box');
+    let boxesElement = document.querySelector('.boxes');
     let timer = false;
     let seconds = 0;
     let minutes = 0;
@@ -15,12 +16,18 @@ document.addEventListener('DOMContentLoaded', () => {
     resetBox.addEventListener('click', handleReset);
 
     function toggleTimer() {
+        if (isBreakMode) {
+            timer = false;
+            isBreakMode = false;
+            clearTimeout(timerInterval);
+            timerInterval = null;
+            resetDisplay();
+            return;
+        }
+
         timer = !timer;
-        
-        if(timer) {
-            if (!timerInterval) {
-                pomoWatch();
-            }
+        if(timer && !timerInterval) {
+            pomoWatch();
         } else {
             clearTimeout(timerInterval);
             timerInterval = null;
@@ -29,6 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleReset(e) {
         e.stopPropagation();
+        if (isBreakMode) {
+            timer = false;
+            isBreakMode = false;
+            clearTimeout(timerInterval);
+            timerInterval = null;
+            resetDisplay();
+            return;
+        }
         reset();
     }
 
@@ -84,6 +99,19 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.mn2').textContent = min2;
         document.querySelector('.sc1').textContent = sec1;
         document.querySelector('.sc2').textContent = sec2;
+
+        // Aggiorna le classi in base allo stato
+        if(timer) {
+            boxesElement.classList.add('timer-active');
+        } else {
+            boxesElement.classList.remove('timer-active');
+        }
+        
+        if(isBreakMode) {
+            boxesElement.classList.add('break-mode');
+        } else {
+            boxesElement.classList.remove('break-mode');
+        }
     }
 
     function reset() {
