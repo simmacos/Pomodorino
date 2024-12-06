@@ -1,94 +1,117 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const BREAK_RATIO = 0.2; // 20% del tempo di lavoro
+    const MIN_TIME_FOR_BREAK = 30; // secondi minimi per avere una pausa
+    
     let startStopBtn = document.querySelector('.boxes-button');
-    let resetBox = document.querySelector('#reset-box'); 
+    let resetBox = document.querySelector('#reset-box');
     let timer = false;
     let seconds = 0;
     let minutes = 0;
     let isBreakMode = false;
+    let timerInterval = null;
 
+    // Event Listeners
+    startStopBtn.addEventListener('click', toggleTimer);
+    resetBox.addEventListener('click', handleReset);
 
-    startStopBtn.addEventListener('click', () => {
+    function toggleTimer() {
         timer = !timer;
-
-        if(timer){
-            pomoWatch();
+        
+        if(timer) {
+            if (!timerInterval) {
+                pomoWatch();
+            }
+        } else {
+            clearTimeout(timerInterval);
+            timerInterval = null;
         }
-    });
+    }
 
-    resetBox.addEventListener('click', (e)=>{
+    function handleReset(e) {
         e.stopPropagation();
         reset();
-    })
+    }
 
-    function pomoWatch(){
-        if(timer){
-            if(isBreakMode){
-                if(seconds > 0 || minutes > 0){
-                    if(seconds === 0){
-                        minutes --
-                        seconds == 59
-                    } else { 
-                        seconds --;
-                    }
-                } else {
-                    timer = false;
-                    isBreakMode = false;
-                    return;
-                }
-            } else {
-                seconds ++;
-            
-                if(seconds === 60){
-                    minutes++;
-                    seconds = 0;
-                }
-            }
-
-            let min1 = Math.floor(minutes / 10);
-            let min2 = minutes % 10;
-
-            let sec1 = Math.floor(seconds / 10);
-            let sec2 = seconds % 10;
-
-            document.querySelector('.mn1').textContent = min1;
-            document.querySelector('.mn2').textContent = min2;
-            document.querySelector('.sc1').textContent = sec1;
-            document.querySelector('.sc2').textContent = sec2;
-
-            setTimeout(pomoWatch, 1000);
+    function pomoWatch() {
+        if(!timer) {
+            clearTimeout(timerInterval);
+            timerInterval = null;
+            return;
         }
+
+        if(isBreakMode) {
+            handleBreakTimer();
+        } else {
+            handleWorkTimer();
+        }
+
+        updateDisplay();
+        timerInterval = setTimeout(pomoWatch, 1000);
+    }
+
+    function handleBreakTimer() {
+        if(seconds === 0 && minutes === 0) {
+            timer = false;
+            isBreakMode = false;
+            clearTimeout(timerInterval);
+            timerInterval = null;
+            return;
+        }
+
+        if(seconds === 0) {
+            minutes--;
+            seconds = 59;
+        } else {
+            seconds--;
+        }
+    }
+
+    function handleWorkTimer() {
+        seconds++;
+        if(seconds === 60) {
+            minutes++;
+            seconds = 0;
+        }
+    }
+
+    function updateDisplay() {
+        const min1 = Math.floor(minutes / 10);
+        const min2 = minutes % 10;
+        const sec1 = Math.floor(seconds / 10);
+        const sec2 = seconds % 10;
+
+        document.querySelector('.mn1').textContent = min1;
+        document.querySelector('.mn2').textContent = min2;
+        document.querySelector('.sc1').textContent = sec1;
+        document.querySelector('.sc2').textContent = sec2;
     }
 
     function reset() {
         timer = false;
-        if(minutes === 0 & seconds < 30){
-            seconds = 0;
-            minutes = 0;
-            document.querySelector('.mn1').textContent = '0';
-            document.querySelector('.mn2').textContent = '0';
-            document.querySelector('.sc1').textContent = '0';
-            document.querySelector('.sc2').textContent = '0';
+        clearTimeout(timerInterval);
+        timerInterval = null;
+        const totalSeconds = minutes * 60 + seconds;
+
+        if(totalSeconds < MIN_TIME_FOR_BREAK) {
+            resetDisplay();
+            return;
         }
-        calcPause();
+
+        startBreakTimer(totalSeconds);
     }
 
-    function calcPause(){
-        seconds = seconds + (minutes * 60 );
-
-        seconds = Math.round(seconds * 0.2);
-        minutes = Math.floor(seconds / 60);
-        seconds = (seconds % 60);
-
-        pauseTimer(seconds, minutes);
+    function resetDisplay() {
+        seconds = 0;
+        minutes = 0;
+        updateDisplay();
     }
 
-    function pauseTimer(sec, min) {
-        seconds = sec;
-        minutes = min;
+    function startBreakTimer(totalSeconds) {
+        const breakSeconds = Math.round(totalSeconds * BREAK_RATIO);
+        seconds = breakSeconds % 60;
+        minutes = Math.floor(breakSeconds / 60);
         timer = true;
         isBreakMode = true;
-        pomoWatch(); 
+        pomoWatch();
     }
-
-
-})
+});
