@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const BREAK_RATIO = 0.2; // 20% del tempo di lavoro
-    const MIN_TIME_FOR_BREAK = 1; // secondi minimi per avere una pausa
-    
+    const MIN_TIME_FOR_BREAK = 20; // secondi minimi per avere una pausa
+
     let startStopBtn = document.querySelector('.boxes-button');
     let resetBox = document.querySelector('#reset-box');
     let boxesElement = document.querySelector('.boxes');
@@ -15,18 +15,25 @@ document.addEventListener('DOMContentLoaded', () => {
     startStopBtn.addEventListener('click', toggleTimer);
     resetBox.addEventListener('click', handleReset);
 
+    resetBox.addEventListener('mouseenter', () => {
+        if (isBreakMode) {
+            startStopBtn.classList.add('hover-red');
+        }
+    });
+    resetBox.addEventListener('mouseleave', () => {
+        startStopBtn.classList.remove('hover-red');
+    });
+
     function toggleTimer() {
         if (isBreakMode) {
             timer = false;
-            isBreakMode = false;
             clearTimeout(timerInterval);
             timerInterval = null;
-            resetDisplay();
             return;
         }
 
         timer = !timer;
-        if(timer && !timerInterval) {
+        if (timer && !timerInterval) {
             pomoWatch();
         } else {
             clearTimeout(timerInterval);
@@ -48,13 +55,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function pomoWatch() {
-        if(!timer) {
+        if (!timer) {
             clearTimeout(timerInterval);
             timerInterval = null;
             return;
         }
 
-        if(isBreakMode) {
+        if (isBreakMode) {
             handleBreakTimer();
         } else {
             handleWorkTimer();
@@ -65,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function handleBreakTimer() {
-        if(seconds === 0 && minutes === 0) {
+        if (seconds === 0 && minutes === 0) {
             timer = false;
             isBreakMode = false;
             clearTimeout(timerInterval);
@@ -73,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        if(seconds === 0) {
+        if (seconds === 0) {
             minutes--;
             seconds = 59;
         } else {
@@ -83,7 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleWorkTimer() {
         seconds++;
-        if(seconds === 60) {
+        if (seconds === 60) {
             minutes++;
             seconds = 0;
         }
@@ -100,14 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.sc1').textContent = sec1;
         document.querySelector('.sc2').textContent = sec2;
 
-        // Aggiorna le classi in base allo stato
-        if(timer) {
+        if (timer) {
             boxesElement.classList.add('timer-active');
         } else {
             boxesElement.classList.remove('timer-active');
         }
-        
-        if(isBreakMode) {
+
+        if (isBreakMode) {
             boxesElement.classList.add('break-mode');
         } else {
             boxesElement.classList.remove('break-mode');
@@ -120,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
         timerInterval = null;
         const totalSeconds = minutes * 60 + seconds;
 
-        if(totalSeconds < MIN_TIME_FOR_BREAK) {
+        if (totalSeconds < MIN_TIME_FOR_BREAK) {
             resetDisplay();
             return;
         }
