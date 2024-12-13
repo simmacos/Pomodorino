@@ -101,24 +101,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const min2 = minutes % 10;
         const sec1 = Math.floor(seconds / 10);
         const sec2 = seconds % 10;
-
+    
         document.querySelector('.mn1').textContent = min1;
         document.querySelector('.mn2').textContent = min2;
         document.querySelector('.sc1').textContent = sec1;
         document.querySelector('.sc2').textContent = sec2;
-
+    
+        // Aggiorna il titolo della pagina
+        if (timer) {
+            document.title = ` ${min1}${min2}:${sec1}${sec2}`;
+        } else {
+            document.title = 'Pomodorino';
+        }
+    
         if (timer) {
             boxesElement.classList.add('timer-active');
         } else {
             boxesElement.classList.remove('timer-active');
         }
-
+    
         if (isBreakMode) {
             boxesElement.classList.add('break-mode');
         } else {
             boxesElement.classList.remove('break-mode');
         }
-    }
+    }    
 
     function reset() {
         timer = false;
