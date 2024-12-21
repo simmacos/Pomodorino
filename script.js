@@ -25,12 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function toggleTimer() {
         if (isBreakMode) {
-            timer = false;
-            clearTimeout(timerInterval);
-            timerInterval = null;
+            if (timer) { // Se il timer è attivo, lo fermiamo
+                timer = false;
+                clearTimeout(timerInterval);
+                timerInterval = null;
+            } else { // Se il timer è fermo, lo riavviamo
+                timer = true;
+                pomoWatch();
+            }
             return;
         }
-
+    
+        // Logica normale per il timer
         timer = !timer;
         if (timer && !timerInterval) {
             pomoWatch();
@@ -39,6 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
             timerInterval = null;
         }
     }
+    
 
     function handleReset(e) {
         e.stopPropagation();
@@ -92,6 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
         if (seconds === 60) {
             minutes++;
             seconds = 0;
+        }
+    
+        if (minutes === 100) {
+            timer = false; // Ferma il timer
+            clearTimeout(timerInterval); // Pulisce l'intervallo
+            timerInterval = null; // Annulla l'intervallo
+            resetDisplay(); // Reimposta il display
+            return;
         }
     }
 
