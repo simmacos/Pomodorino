@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const BREAK_RATIO = 0.2; // 20% del tempo di lavoro
-    const MIN_TIME_FOR_BREAK = 20; // secondi minimi per avere una pausa
+    const BREAK_RATIO = 0.2; 
+    const MIN_TIME_FOR_BREAK = 20; 
 
     let startStopBtn = document.querySelector('.boxes-button');
     let resetBox = document.querySelector('#reset-box');
@@ -11,7 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let isBreakMode = false;
     let timerInterval = null;
 
-    // Event Listeners
     startStopBtn.addEventListener('click', toggleTimer);
     resetBox.addEventListener('click', handleReset);
 
