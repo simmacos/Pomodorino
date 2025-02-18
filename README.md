@@ -18,10 +18,12 @@ A minimalist, dynamic Pomodoro timer that adapts break duration to your work ses
    - Start break time
    - Click again to reset to 0
 
-![Work Mode](assets/work-mode.png)
+![Screenshot From 2025-02-18 19-29-59](https://github.com/user-attachments/assets/a10d444b-e0c2-45aa-961f-041108226176)
+
 *Work mode - Timer counting up*
 
-![Break Mode](assets/break-mode.png)
+![Screenshot From 2025-02-18 19-30-16](https://github.com/user-attachments/assets/1a3ffc1b-5f6c-4993-9254-d683154ca698)
+
 *Break mode - Timer counting down with reset option*
 
 ## Break Time Calculation
